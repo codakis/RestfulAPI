@@ -3,6 +3,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
+using RestfulAPI.Helpers;
+using RestfulAPI.Models;
 using RestfulAPI.Services;
 
 namespace RestfulAPI.Controllers
@@ -12,16 +16,19 @@ namespace RestfulAPI.Controllers
     public class AuthorsController : ControllerBase
     {
         private readonly IRestfulApiRepository _repo;
+        private readonly IMapper _mapper;
 
-        public AuthorsController(IRestfulApiRepository repo)
+        public AuthorsController(IRestfulApiRepository repo,IMapper mapper)
         {
             _repo = repo ?? throw new ArgumentNullException(nameof(repo));
+            _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
         [HttpGet()]
-        public IActionResult GetAuthors()
+        public ActionResult<IEnumerable<AuthorsDto>> GetAuthors()
         {
             var authorsFromRepo = _repo.GetAuthors();
-            return Ok(authorsFromRepo);
+           
+            return Ok(_mapper.Map<IEnumerable<AuthorsDto>>(authorsFromRepo));
         }
         [HttpGet("{authorId:guid}")]
         public IActionResult GetAuthor(Guid authorId)
@@ -32,7 +39,7 @@ namespace RestfulAPI.Controllers
             {
                 return NotFound();
             }
-            return Ok(authorFromRepo);
+            return Ok(_mapper.Map<AuthorsDto>(authorFromRepo));
         }
 
     }

@@ -10,6 +10,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.Formatters;
 using RestfulAPI.DbContexts;
 using RestfulAPI.Services;
 
@@ -27,7 +30,12 @@ namespace RestfulAPI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddControllers();
+            services.AddControllers(a =>
+            {
+                a.ReturnHttpNotAcceptable = true;
+                //a.OutputFormatters.Add( new XmlDataContractSerializerOutputFormatter());
+            }).AddXmlDataContractSerializerFormatters();
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             services.AddScoped<IRestfulApiRepository, RestfulApiRepository>();
             services.AddDbContext<RestfulAPIContext>(o =>
             {
@@ -42,6 +50,17 @@ namespace RestfulAPI
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+            }
+            else
+            {
+                app.UseExceptionHandler(appBuilder =>
+                {
+                    appBuilder.Run(async context =>
+                    {
+                        context.Response.StatusCode = 500;
+                        await context.Response.WriteAsync("An unexpected fault happened. Try again later");
+                    });
+                });
             }
 
             app.UseRouting();

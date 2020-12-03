@@ -8,7 +8,7 @@ using RestfulAPI.ResourceParameters;
 
 namespace RestfulAPI.Services
 {
-    public class RestfulApiRepository : IRestfulApiRepository ,IDisposable
+    public class RestfulApiRepository : IRestfulApiRepository, IDisposable
     {
         private readonly RestfulAPIContext _context;
 
@@ -21,7 +21,7 @@ namespace RestfulAPI.Services
         {
             if (authorId == Guid.Empty)
             {
-                throw  new ArgumentNullException(nameof(authorId));
+                throw new ArgumentNullException(nameof(authorId));
             }
 
             if (course == null)
@@ -41,14 +41,14 @@ namespace RestfulAPI.Services
 
         public Course GetCourse(Guid authorId, Guid courseId)
         {
-            if (authorId ==Guid.Empty)
+            if (authorId == Guid.Empty)
             {
-                throw  new ArgumentNullException(nameof(authorId));
+                throw new ArgumentNullException(nameof(authorId));
             }
 
             if (courseId == Guid.Empty)
             {
-                throw  new ArgumentNullException(nameof(courseId));
+                throw new ArgumentNullException(nameof(courseId));
 
             }
 
@@ -97,7 +97,7 @@ namespace RestfulAPI.Services
 
         public void DeleteAuthor(Author author)
         {
-            if (author ==null)
+            if (author == null)
             {
                 throw new ArgumentNullException(nameof(author));
             }

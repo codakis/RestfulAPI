@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using AutoMapper;
 using RestfulAPI.DbContexts;
 using RestfulAPI.Entities;
+using RestfulAPI.ResourceParameters;
 
 namespace RestfulAPI.Services
 {
@@ -113,6 +115,35 @@ namespace RestfulAPI.Services
             return _context.Authors.FirstOrDefault(a => a.Id == authorId);
         }
 
+        public IEnumerable<Author> GetAuthors(AuthorsResourceParameters parameters)
+
+        {
+            if (parameters == null)
+            {
+                throw new ArgumentNullException(nameof(parameters));
+            }
+            if (string.IsNullOrWhiteSpace(parameters.MainCategory) && string.IsNullOrWhiteSpace(parameters.SearchQuery))
+            {
+                return GetAuthors();
+            }
+
+            var collection = _context.Authors as IQueryable<Author>;
+            if (!string.IsNullOrEmpty(parameters.MainCategory))
+            {
+                var mainCategory = parameters.MainCategory.Trim();
+                collection = collection.Where(a => a.MainCategory == mainCategory);
+            }
+            if (!string.IsNullOrEmpty(parameters.SearchQuery))
+            {
+                var searchQuery = parameters.SearchQuery.Trim();
+                collection = collection.Where(a => a.MainCategory.Contains(searchQuery)
+                        || a.FirstName.Contains(searchQuery)
+                        || a.LastName.Contains(searchQuery));
+            }
+
+            return collection.ToList();
+
+        }
         public IEnumerable<Author> GetAuthors()
         {
             return _context.Authors.ToList<Author>();

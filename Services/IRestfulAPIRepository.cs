@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using RestfulAPI.Entities;
+using RestfulAPI.ResourceParameters;
 
 namespace RestfulAPI.Services
 {
@@ -16,6 +17,7 @@ namespace RestfulAPI.Services
         void DeleteAuthor(Author author);
         Author GetAuthor(Guid authorId);
         IEnumerable<Author> GetAuthors();
+        IEnumerable<Author> GetAuthors(AuthorsResourceParameters parameters);
         IEnumerable<Author> GetAuthors(IEnumerable<Guid> authorIds);
         void UpdateAuthor(Author author);
         bool Save();

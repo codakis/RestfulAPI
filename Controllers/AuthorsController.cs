@@ -7,6 +7,7 @@ using AutoMapper;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using RestfulAPI.Helpers;
 using RestfulAPI.Models;
+using RestfulAPI.ResourceParameters;
 using RestfulAPI.Services;
 
 namespace RestfulAPI.Controllers
@@ -24,9 +25,11 @@ namespace RestfulAPI.Controllers
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
         [HttpGet()]
-        public ActionResult<IEnumerable<AuthorsDto>> GetAuthors()
+        [HttpHead]
+        public ActionResult<IEnumerable<AuthorsDto>> GetAuthors([FromQuery]AuthorsResourceParameters parameters)
         {
-            var authorsFromRepo = _repo.GetAuthors();
+
+            var authorsFromRepo = _repo.GetAuthors(parameters);
            
             return Ok(_mapper.Map<IEnumerable<AuthorsDto>>(authorsFromRepo));
         }
